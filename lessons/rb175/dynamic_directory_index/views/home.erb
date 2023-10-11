@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dynamic Directory</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <ul>
+    <% @files.each do |file| %>
+      <li><a href="<%= file %>"><%= file %></a></li>
+    <% end %>
+  </ul>
+
+  <% case params["sort"]
+     when "desc" then %><a href="/">Sort ascending</a>
+  <% else %>            <a href="/?sort=desc">Sort descending</a><% end %>
+</body>
+</html>

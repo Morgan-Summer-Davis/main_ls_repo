@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Users</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <%= yield %>
+
+  <p>
+    There are a total of <%= @users.count %> users with a total of
+    <%= count_interests %> interests.
+  </p>
+</body>
+</html>

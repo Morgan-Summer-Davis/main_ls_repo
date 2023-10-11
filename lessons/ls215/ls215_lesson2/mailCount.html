@@ -1,0 +1,22 @@
+<script src="//dbdwvr6p7sskw.cloudfront.net/210/files/email_data_v2.js"></script>
+<script>
+  function mailCount(emailData) {
+    let emails  = emailData.split('##||##');
+    let count   = emails.length;
+    let dates   = emails.map(email => email.split('#/#'))
+                        .map(section => new Date(section[2]).toDateString())
+                        .sort((a, b) => a - b);
+
+    console.log(
+      `Count of Emails: ${count}\n\n` +
+      `Date Range: ${dates[0]} - ${dates[dates.length - 1]}`
+    );
+  }
+
+  mailCount(emailData);
+
+  // console output
+
+  // Count of Email: 5
+  // Date Range: Sat Jun 25 2016 - Thu Aug 11 2016
+</script>

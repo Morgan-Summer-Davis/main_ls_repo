@@ -1,0 +1,172 @@
+#! /usr/bin/env ruby
+
+require 'pg'
+require 'bundler/setup'
+require 'io/console'
+
+class ExpenseData
+  def initialize
+    @connection = PG.connect(dbname: 'expenses')
+    setup_schema
+  end
+
+  def setup_schema
+    table_exists = @connection.exec("SELECT COUNT(*) FROM information_schema.tables "\
+                                    "WHERE table_schema = 'public' "\
+                                    "AND table_name = 'expenses';") == 1
+
+    unless table_exists
+      @connection.exec('CREATE TABLE expenses ( '\
+                          'id serial PRIMARY KEY, '\
+                          'amount numeric(6,2) CHECK (amount >= 0.01) NOT NULL, '\
+                          'memo text NOT NULL, '\
+                          'created_on date NOT NULL DEFAULT (CAST (CURRENT_TIMESTAMP AS date))'\
+                       ');')
+    end
+  end
+
+  def list_expenses
+    display_expenses('SELECT * FROM expenses', [])
+  end
+
+  def add_expense(amount, memo, date = nil)
+    date = date || Time.now.strftime('%D')
+
+    @connection.exec_params("INSERT INTO expenses VALUES (DEFAULT, $1, $2, $3::date)",
+                           [amount, memo, date])
+  end
+
+  def delete_expense(id)
+    valid_id = @connection.exec_params('SELECT * FROM expenses WHERE id = $1',
+                                        [id]).ntuples == 1
+    return puts "There is no expense with the ID '#{id}'." unless valid_id
+
+    puts 'The following expense has been deleted:'
+    display_expenses("SELECT * FROM expenses WHERE id = $1", [id])
+
+    @connection.exec_params("DELETE FROM expenses WHERE id = $1", [id])
+  end
+
+  def delete_all_expenses
+    @connection.exec('DELETE FROM expenses;')
+    puts 'All expenses have been deleted.'
+  end
+
+  def search_expenses(term)
+    display_expenses("SELECT * FROM expenses WHERE memo ILIKE $1 OR amount = $2",
+                     ["%#{term}%", term.to_f])
+  end
+
+  def display_expenses(query, query_params)
+    query_results = @connection.exec_params(query, query_params)
+
+    display_expense_count(query, query_params)
+
+    row_length = 0
+    query_results.each do |row|
+      print_row = "#{row['id'].rjust(3)} | #{row['created_on'].rjust(10)} | "\
+                  "#{row['amount'].rjust(12)} | #{row['memo']}"
+      row_length = print_row.length if print_row.length > row_length
+      puts print_row
+    end
+
+    if query_results.ntuples > 0
+      puts ('-' * row_length)
+      puts ('Total ' + query_results.field_values('amount').map(&:to_f).sum.round(2).to_s.rjust(25))
+    end
+  end
+
+  def display_expense_count(query, query_params)
+    query_results = @connection.exec_params(query, query_params)
+
+    case query_results.ntuples
+    when 0 then puts 'There are no expenses.'
+    when 1 then puts 'There is 1 expense.'
+    else        puts "There are #{query_results.ntuples} expenses."
+    end
+  end
+end
+
+class CLI
+  VALID_COMMANDS = ['help', 'list', 'add', 'clear', 'delete', 'search']
+
+  def initialize
+    @data = ExpenseData.new
+  end
+
+  def run(argv)
+    command = ARGV[0] || 'help'
+
+    return puts validate_input(command, argv) if validate_input(command, argv)
+
+    case command
+    when 'help'   then display_help
+    when 'list'   then @data.list_expenses
+    when 'add'    then @data.add_expense(*argv[1..-1])
+    when 'delete' then @data.delete_expense(*argv[1..-1])
+    when 'search' then @data.search_expenses(*argv[1..-1])
+    when 'clear'
+                       puts 'This will remove all expenses. Are you sure? (y/n)'
+                       @data.delete_all_expenses if $stdin.getch == 'y'
+    end
+  end
+
+  def validate_input(command, argv)
+    case command
+    when 'add'
+      amount, memo, date = argv[1], argv[2], argv[3]
+      arg_count = [3, 4]
+      if amount == nil
+        return "You must provide an amount and memo."
+      elsif amount.match?(/[^0-9\.\$]/)
+        return "The amount must be a number."
+      elsif memo == nil
+        return "You must provide a memo."
+      elsif date != nil && !date.match?(/\d{4}-\d{2}-\d{2}/)
+        return 'Dates must be formatted as YYYY-MM-DD.'
+      end
+    when 'delete'
+      id = argv[1]
+      arg_count = [2]
+
+      if id == nil
+        return 'You must provide the ID of an expense to delete.'
+      elsif id.match?(/[^0-9]/)
+        return "ID's must contain only numeric characters."
+      end
+    when 'search'
+      term = argv[1]
+      arg_count = [2]
+
+      if term == nil
+        return 'A term or amount to search for must be included. Try "help" for more information.'
+      end
+    when 'list', 'help', 'clear'
+      arg_count = [1]
+    end
+
+    if arg_count && !arg_count.include?(argv.count)
+      return 'Invalid number of parameters. Try "help" for more information.'
+    end
+
+    if !VALID_COMMANDS.include?(command)
+      return 'Invalid input. Try "help" for available commands.'
+    end
+
+    false
+  end
+
+  def display_help
+    puts ''
+    puts 'Commands:'
+    puts ''
+    puts 'add AMOUNT MEMO DATE (optional) - record a new expense'
+    puts 'clear - delete all expenses'
+    puts 'list - list all expenses'
+    puts 'delete NUMBER - remove expense with id NUMBER'
+    puts 'search QUERY - list expenses with a matching memo field'
+    puts ''
+  end
+end
+
+CLI.new.run(ARGV)

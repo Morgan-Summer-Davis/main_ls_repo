@@ -1,0 +1,5 @@
+<ul>
+  <% @user_hash.keys.each do |user| %>
+    <li><a href="/users/<%= user.to_s %>"> <%= user.to_s %></a></li>
+  <% end %>
+</ul>

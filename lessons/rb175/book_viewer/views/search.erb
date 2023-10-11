@@ -1,0 +1,30 @@
+<h2 class="content-subhead">Search</h2>
+
+<form action="/search" method="get">
+  <input name="query" value="<%= params[:query] %>">
+  <button type="submit">Search</button>
+</form>
+
+<% if params[:query]
+  if chapters_containing(params[:query]).count > 0 %>
+    <h2>Results for '<%= params[:query] %>'</h2>
+  <% else %>
+    <p>Sorry, no matches were found.</p>
+  <% end %>
+
+  <ul>
+    <% files_containing(params[:query]).each do |file| %>
+      <li><h3><%= get_chapter_title(file) %></h3></li>
+      <ul>
+        <% in_paragraphs(File.read(file)).each_with_index do |para, index|
+          next unless para.include? params[:query] %>
+          <li>
+            <a href="chapters/<%= @table_of_contents.index(get_chapter_title(file)) + 1 %>#paragraph-<%= index + 1 %>">
+              <%= bold_substring(para, params[:query]) %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </ul>
+<% end %>

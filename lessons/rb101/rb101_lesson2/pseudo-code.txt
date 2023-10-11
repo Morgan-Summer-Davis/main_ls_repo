@@ -1,0 +1,124 @@
+a method that returns the sum of two integers
+---
+  informal
+    - given two integers
+    - return the sum of the two integers
+  
+  
+  formal
+    START
+    
+    # Given two integers, x and y
+    
+    PRINT x + y
+    END
+  
+  
+a method that takes an array of strings, and returns a string that is all those
+strings concatenated together
+---
+  informal
+    - given an array of strings
+    - iterate through the strings, adding each to an output variable
+    - return the output variable
+  
+  
+  formal
+    START
+    
+    # Given an array of strings called strings
+    
+    SET iterator = 1
+    SET output = ''
+    
+    WHILE iterator < length of strings
+      SET output to output concatonated with the value at location iterator in strings
+      iterator = iterator + 1
+    
+    PRINT output
+    
+    END
+  
+  
+a method that takes an array of integers, and returns a new array with every
+other element from the original array, starting with the first element.
+---
+  informal
+    - given an array of integers
+    - iterate through the array, adding each other value to an output array
+    - return the output array
+  
+  formal
+    START
+    
+    # Given an array of integers called integers
+    
+    SET iterator = 0
+    SET output = []
+    
+    WHILE iterator < number of elements in integers
+      IF iterator is even
+        output = output + the value at place iterator in integers
+        
+      iterator = iterator + 1
+      
+    PRINT output
+  
+  
+a method that determines the index of the 3rd occurrence of a given character in
+a string. For instance, if the given character is 'x' and the string is
+'axbxcdxex', the method should return 6 (the index of the 3rd 'x'). If the given
+character does not occur at least 3 times, return nil.
+---
+  informal
+    - given a string
+    - set the output to nil
+    - iterate through the characters in the string
+    - while iterating, each time we find the character, increase an iterating variable by one
+    - while if the variable is three, set the output to that location
+    - return the output
+  
+  formal
+    START
+    
+    # Given a string and a character
+    
+    SET iterator = 0
+    SET target_character = 0
+    SET output = nil
+    
+    WHILE iterator < the number of characters in string
+      IF the value at space iterator in the characters of string == character
+        target_character = target_character + 1
+      IF target_character == 3
+        output = iterator
+      iterator = iterator + 1
+    
+    PRINT output
+  
+  
+a method that takes two arrays of numbers and returns the result of merging the
+arrays. The elements of the first array should become the elements at the even
+indexes of the returned array, while the elements of the second array should
+become the elements at the odd indexes.
+---
+  informal
+  - given two equally sized arrays
+  - begin iterating through the first array
+  - add the value at the iterator location from the first array to the output,
+    then add the value at the same location from the second array to the output
+  - return the output
+  
+  formal
+  START
+  
+  # Given two equally sized arrays, array1 and array2
+  
+  SET iterator = 0
+  SET output = []
+  
+  WHILE iterator < array1's length
+    output = output + the value at iterator's value in array1 + the value at
+             iterator's value in array2
+  
+  PRINT output

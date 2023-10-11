@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>Guessing Game</title>
+    <style>
+      html, body {
+        padding: 25px 0;
+        margin: 0;
+        font: normal 16px Helvetica, Arial, sans-serif;
+        text-align: center;
+        color: #16997c;
+        background: #5bccb3;
+      }
+
+      main {
+        display: block;
+        max-width: 450px;
+        padding: 20px;
+        margin: 0 auto;
+        background: #ffffff;
+        box-sizing: border-box;
+      }
+
+      h1 {
+        color: #CC183E;
+      }
+
+      fieldset {
+        padding: 0 0 25px 0;
+        margin: 0;
+        border: none;
+      }
+
+      input[type="text"] {
+        width: 80px;
+        height: 50px;
+        padding: 5px;
+        margin: 0 0 20px 0;
+        font: normal 24px Georgia, Palatino, serif;
+        text-align: center;
+        border: 1px solid #cecece;
+        box-sizing: border-box;
+      }
+
+      input[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        font: normal 20px Helvetica, Arial, sans-serif;
+        color: #ffffff;
+        text-shadow: 1px 1px 5px rgba(80, 80, 80, .8);
+        border: 1px solid #91112C;
+        box-shadow: 0 0 1px 1px #780e24;
+        border-radius: 11px;
+        background: linear-gradient(to bottom, #CC183E 0%, #780E24 100%);
+      }
+
+      a { color: #cc183e; }
+
+      input[type="submit"]:disabled {
+        box-shadow: none;
+        background: #C7637E;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Number Guessing Game</h1>
+      <p>Loading...</p>
+      <form action="" method="get">
+        <fieldset>
+          <input type="text" id="guess" maxlength="3" />
+          <input type="submit" value="Guess" />
+        </fieldset>
+      </form>
+      <a href="#">New game</a>
+    </main>
+
+    <script>
+      let answer;
+      let numOfGuesses;
+      let paragraph;
+      let button;
+
+      function setUpGame() {
+        answer = Math.floor(Math.random() * 100) + 1;
+        numOfGuesses = 0;
+        paragraph = document.querySelector('p');
+        button.removeAttribute('disabled');
+        paragraph.textContent = 'Guess a number between 1 and 100';
+      }
+
+      function validGuess(guess) {
+        return String(parseInt(guess, 10)) === guess;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        button = document.querySelector('fieldset').lastElementChild;
+        setUpGame();
+
+        document.querySelector('form').addEventListener('submit', formSubmit => {
+          formSubmit.preventDefault();
+          let guess = document.getElementById('guess').value;
+          let message;
+
+          if (!validGuess(guess)) {
+            message = "Invalid guess. Please choose a number between 1 and 100";
+            paragraph.textContent = message;
+            return;
+          }
+
+          guess = parseInt(guess, 10);
+          numOfGuesses++;
+
+          if      (guess < answer) message = `My number is higher than ${guess}`;
+          else if (guess > answer) message = `My number is lower than ${guess}`;
+          else {
+            let guessString = numOfGuesses === 1 ? 'guess' : 'guesses';
+            button.setAttribute('disabled', true);
+            message = `You guessed it! It took you ${numOfGuesses} ${guessString}`;
+          }
+
+          paragraph.textContent = message;
+        });
+
+        document.querySelector('a').addEventListener('click', linkClicked => {
+          linkClicked.preventDefault();
+          setUpGame();
+        })
+      });
+    </script>
+  </body>
+</html>

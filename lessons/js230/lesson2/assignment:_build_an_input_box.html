@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>Build an Input Box</title>
+    <style>
+      .text-field {
+        border: solid 1px #ccc;
+        padding: 1em;
+        cursor: pointer;
+        font-family: sans-serif;
+        font-size: 18px;
+        overflow: hidden;
+        width: 300px;
+      }
+
+      .text-field .content {
+        display: inline-block;
+        height: 21px;
+        float: left;
+        white-space: pre;
+      }
+
+      .text-field.focused {
+        border-color: black;
+      }
+
+      .text-field.cursor .content {
+        border-right: solid 2px black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="text-field">
+      <div class="content"></div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let textField = document.querySelector('.text-field');
+        let content   = document.querySelector('.content');
+        let cursorInterval;
+
+        textField.addEventListener('click', () => {
+          event.stopPropagation();
+          textField.classList.add('focused');
+
+          if (!cursorInterval) {
+            cursorInterval = setInterval(() => {
+              if (textField.classList.contains('cursor')) {
+                textField.classList.remove('cursor');
+              } else {
+                textField.classList.add('cursor');
+              }
+            }, 500);
+          }
+        });
+
+        document.addEventListener('keydown', event => {
+          if (!textField.classList.contains('focused')) return;
+
+          if (event.key === 'Backspace') {
+            content.textContent = content.textContent.slice(0, content.textContent.length - 1);
+          } else if (event.key.length === 1) {
+            content.textContent += event.key;
+          }
+        });
+
+        document.addEventListener('click', () => {
+          clearInterval(cursorInterval);
+          cursorInterval = null;
+          textField.classList.remove('focused');
+          textField.classList.remove('cursor');
+        });
+      });
+    </script>
+  </body>
+</html>

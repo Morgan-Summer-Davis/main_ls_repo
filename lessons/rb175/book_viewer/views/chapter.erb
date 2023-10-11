@@ -1,0 +1,5 @@
+<h2 class="content-subhead"><%= "Chapter #{params[:number]}: #{@title}" %></h2>
+
+<% in_paragraphs(@chapter).each_with_index do |para, index| %>
+    <p id="paragraph-<%= index + 1 %>"><%= para %></p>
+<% end %>

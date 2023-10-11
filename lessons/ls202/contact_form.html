@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>your page title goes here</title>
+  <meta charset="utf-8">
+  <style>
+    html {
+      font-family: helvetica, sans-serif;
+    }
+
+    form {
+      box-sizing: border-box;
+      padding: 0 275px;
+      font-size: 0;
+    }
+
+    fieldset {
+      border: none;
+    }
+
+    label {
+      display: block;
+      margin: 20px 0;
+      font-size: 1rem;
+    }
+
+    input, select {
+      display: block;
+      margin: 5px 0;
+      padding: 5px;
+    }
+
+    [type="text"], [type="email"], textarea {
+      box-sizing: border-box;
+      width: 100%;
+      border: 1px solid #d3d3d3;
+      padding: 10px;
+    }
+
+    [type="submit"], [type="reset"] {
+      display: inline-block;
+      padding: 5px;
+    }
+
+    .name {
+      display: inline-block;
+      width: 45%;
+    }
+
+    .name:first-of-type {
+      margin-right: 10%;
+    }
+
+    #address label {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 6%;
+    }
+
+    #address label:first-of-type {
+      width: 47%;
+    }
+
+    #address label:nth-of-type(2) {
+      width: 7%;
+    }
+
+    #address label:last-of-type {
+      width: 33%;
+      margin-right: 0;
+    }
+  </style>
+</head>
+<body>
+  <form action="#" method="post">
+    <fieldset>
+      <label class="name">
+        First Name
+        <input type="text" name="first-name" required>
+      </label>
+
+      <label class="name">
+        Last Name
+        <input type="text" name="last-name" required>
+      </label>
+
+      <label>
+        Email Address
+        <input type="email" name="email" placeholder="example@example.com" required>
+      </label>
+
+      <section id="address">
+        <label>
+          City
+          <input type="text" name="city" required>
+        </label>
+
+        <label>
+          State
+          <select name="state">
+            <option>AK</option>
+            <option>AL</option>
+            <option>AR</option>
+            <option>AZ</option>
+            <option>CA</option>
+            <option>CO</option>
+            <option>CT</option>
+            <option>DC</option>
+            <option>DE</option>
+            <option>FL</option>
+            <option>GA</option>
+            <option>HI</option>
+            <option>IA</option>
+            <option>ID</option>
+            <option>IL</option>
+            <option>IN</option>
+            <option>KS</option>
+            <option>KY</option>
+            <option>LA</option>
+            <option>MA</option>
+            <option>MD</option>
+            <option>ME</option>
+            <option>MI</option>
+            <option>MN</option>
+            <option>MO</option>
+            <option>MS</option>
+            <option>MT</option>
+            <option>NC</option>
+            <option>ND</option>
+            <option>NE</option>
+            <option>NH</option>
+            <option>NJ</option>
+            <option>NM</option>
+            <option>NV</option>
+            <option>NY</option>
+            <option>OH</option>
+            <option>OK</option>
+            <option>OR</option>
+            <option>PA</option>
+            <option>RI</option>
+            <option>SC</option>
+            <option>SD</option>
+            <option>TN</option>
+            <option>TX</option>
+            <option>UT</option>
+            <option>VA</option>
+            <option>VT</option>
+            <option>WA</option>
+            <option>WI</option>
+            <option>WV</option>
+            <option>WY</option>
+          </select>
+        </label>
+
+        <label>
+          Zip Code
+          <input type="text" name="zip" pattern="[0-9]{5}" placeholder="#####" required>
+        </label>
+      </section>
+
+      <label>
+        Which of these colors do you like best?
+        <select name="color">
+          <option selected>Red</option>
+          <option>Green</option>
+          <option>Blue</option>
+        </select>
+      </label>
+
+      <label>
+        Which web technologies do you want to learn?
+        <select name="technologies" multiple cols="4">
+          <option>HTML</option>
+          <option>CSS</option>
+          <option>Javascript</option>
+          <option>Ruby</option>
+          <option>Rails</option>
+        </select>
+      </label>
+
+      <label>
+        Additional comments:
+        <textarea name="comment" rows="6" cols="80"></textarea>
+      </label>
+
+      <input type="hidden" name="date" value="2023-4-10">
+      <input type="submit" name="submit" value="Send">
+      <input type="reset" name="reset">
+    </fieldset>
+  </form>
+</body>
+</html>

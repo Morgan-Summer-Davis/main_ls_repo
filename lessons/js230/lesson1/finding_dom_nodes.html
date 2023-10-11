@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>On the River</title>
+    <script>
+      // function walk(node, callback) {
+      //   callback(node);
+
+      //   for (let i = 0; i < node.childNodes.length; i += 1) {
+      //     walk(node.childNodes[i], callback);
+      //   }
+      // }
+
+      // function allChildElementsByTag(parentNode, tag) {
+      //   let elements = [];
+
+      //   walk(parentNode, (node) => {
+      //     if (node.nodeName === tag.toUpperCase()) elements.push(node);
+      //   });
+
+      //   return elements;
+      // }
+
+      // allChildElementsByTag(document, 'p').forEach(ele => ele.classList.add('article-text'));
+
+      // Array.prototype.slice.call(document.getElementsByTagName('p')).forEach(ele => {
+      //   ele.classList.add('article-text');
+      // });
+
+      let intros = document.getElementsByTagName('div');
+      for (let i = 0; i < intros.length; i += 1) {
+        if (intros[i].classList.contains('intro')) {
+          let ps = intros[i].getElementsByTagName('p');
+          for (let j = 0; j < ps.length; j += 1) {
+            ps[j].classList.add('article-text');
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="page1">
+      <div class="intro">
+        <p>The sun is low,</p>
+      </div>
+      <p>The waters flow,</p>
+    </div>
+    <div id="page2">
+      <div class="intro">
+        <p>My boat is dancing to and fro.</p>
+      </div>
+      <p>The eve is still,</p>
+    </div>
+    <div id="page3">
+      <div class="intro">
+        <p>Yet from the hill</p>
+      </div>
+      <p>The killdeer echoes loud and shrill.</p>
+    </div>
+  </body>
+</html>
