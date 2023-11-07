@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <title>A JavaScript WYSIWYG Editor</title>
+    <style>
+      body div {
+        margin: auto;
+        width: 750px;
+      }
+      
+      h1 {
+        text-align: center;
+      }
+      
+      #textarea {
+        width: 100%;
+        height: 500px;
+        border: 1.5px solid #A9A9A9;
+        margin-top: 2px;
+      }
+      
+      button {
+        margin-left: auto;
+      }
+      
+      .toggled {
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      Rich Text Editor
+    </h1>
+    <div>
+      <div id="options">
+        <button class="toggle" id="b" data-command="bold">B</button>
+        <button class="toggle" id="i" data-command="italic">I</button>
+        <button class="toggle" id="u" data-command="underline">U</button>
+        <button class="toggle" id="strike" data-command="strikeThrough">S</button>
+        <button class="toggle" id="a" data-command="createLink">HREF</button>
+        <button class="toggle" id="ul" data-command="insertUnorderedList">UL</button>
+        <button class="toggle" id="ol" data-command="insertOrderedList">OL</button>
+        <button class="toggle" id="left" data-command="justifyLeft">Left</button>
+        <button class="toggle" id="right" data-command="justifyRight">Right</button>
+        <button class="toggle" id="center" data-command="justifyCenter">Center</button>
+        <button class="toggle" id="justify" data-command="justifyFull">Justify</button>
+      </div>
+      <div id="textarea" contenteditable="true"></div>
+    </div>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let textarea = document.getElementById('textarea');
+        
+        document.getElementById('options').addEventListener('click', event => {
+          if (event.target.tagName !== 'BUTTON') return;
+          
+          let data = event.target.id === 'a' ? prompt('Enter the URL to link to:') : null;
+          
+          document.execCommand(event.target.dataset.command, false, data);
+          event.target.classList.toggle('toggled');
+          textarea.focus();
+        });
+        
+        document.addEventListener('selectionchange', event => {
+          let rangeElem = window.getSelection().getRangeAt(0).startContainer.parentElement;
+          let children = Array.from(rangeElem.children);
+          while (children.length > 0) {
+            rangeElem = children[children.length - 1];
+            children = Array.from(rangeElem.children);
+          }
+
+          Array.from(document.getElementsByClassName('toggle')).forEach(button => {
+            button.classList.remove('toggled');
+          });
+          
+          if (rangeElem.closest('b')) document.getElementById('b').classList.add('toggled');
+          if (rangeElem.closest('i')) document.getElementById('i').classList.add('toggled');
+          if (rangeElem.closest('u')) document.getElementById('u').classList.add('toggled');
+          if (rangeElem.closest('strike')) document.getElementById('strike').classList.add('toggled');
+          if (rangeElem.closest('a')) {
+            document.getElementById('a').classList.add('toggled');
+            document.getElementById('u').classList.add('toggled');
+          }
+          if (rangeElem.closest('ul')) document.getElementById('ul').classList.add('toggled');
+          if (rangeElem.closest('ol')) document.getElementById('ol').classList.add('toggled');
+          
+          if (rangeElem.closest('[style="text-align: right;"]')) {
+            document.getElementById('right').classList.add('toggled');
+          } else if (rangeElem.closest('[style="text-align: center;"]')) {
+            document.getElementById('center').classList.add('toggled');
+          } else if (rangeElem.closest('[style="text-align: justify;"]')) {
+            document.getElementById('justify').classList.add('toggled');
+          } else {
+            document.getElementById('left').classList.add('toggled');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

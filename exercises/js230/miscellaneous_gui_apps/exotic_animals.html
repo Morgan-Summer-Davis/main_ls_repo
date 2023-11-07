@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>Exotic Animals</title>
+    <style>
+      figure {
+        display: inline-block;
+      }
+
+      img {
+        max-height: 200px;
+        display: inline-block;
+      }
+
+      figcaption {
+        opacity: 0;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+      }
+
+      .fadein {
+        opacity: 1;
+        transition: 0.5s;
+      }
+
+      .fadeout {
+        opacity: 0;
+        transition: 0.5s;
+      }
+    </style>
+  </head>
+  <body>
+    <figure>
+      <img src="https://dbdwvr6p7sskw.cloudfront.net/js-exercises/mini_projects/misc_gui_projects/01_exotic_animals_tooltip/images/quetzal.jpg"
+           alt="Quetzal" />
+      <figcaption>
+        Quetzal are found in forests and woodlands, especially in humid highlands, with the five species from the genus Pharomachrus being exclusively Neotropical, while the single Euptilotis species is found in Mexico and very locally in southern United States
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="https://dbdwvr6p7sskw.cloudfront.net/js-exercises/mini_projects/misc_gui_projects/01_exotic_animals_tooltip/images/blackbuck.jpg"
+           alt="Blackbuck" />
+      <figcaption>
+        The blackbuck, also known as the Indian antelope, is an antelope found in Pakistan, India and Nepal. The blackbuck is the sole extant member of the genus Antilope. The species was described and given its binomial name by Swedish zoologist Carl Linnaeus in 1758.
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="https://dbdwvr6p7sskw.cloudfront.net/js-exercises/mini_projects/misc_gui_projects/01_exotic_animals_tooltip/images/golden_pheasant.jpg"
+           alt="Golden Pheasant" />
+      <figcaption>
+        The golden pheasant or Chinese pheasant (Chrysolophus pictus) is a gamebird of the order Galliformes (gallinaceous birds) and the family Phasianidae (pheasants). It is native to forests in mountainous areas of western China.
+      </figcaption>
+    </figure>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        let mouseoverTarget = null;
+        document.body.addEventListener('mouseenter', event => {
+          if (event.target.tagName !== 'IMG') return;
+
+          mouseoverTarget = event.target;
+
+          setTimeout(() => {
+            if (mouseoverTarget === event.target) {
+              event.target.parentElement.querySelector('figcaption').classList.remove('fadeout');
+              event.target.parentElement.querySelector('figcaption').classList.add('fadein');
+            }
+          }, 2000);
+        }, true);
+
+        document.body.addEventListener('mouseout', event => {
+          if (event.target.tagName !== 'IMG') return;
+
+          mouseoverTarget = null;
+          event.target.parentElement.querySelector('figcaption').classList.remove('fadein');
+          event.target.parentElement.querySelector('figcaption').classList.add('fadeout');
+        }, true);
+      });
+    </script>
+  </body>
+</html>

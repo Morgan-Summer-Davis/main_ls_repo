@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <title>Adding Smart Selecting to Car Shop</title>
+    <style>
+      body {
+        margin: 0;
+      }
+
+      header {
+        background: #e29921;
+        padding: 20px;
+        padding-bottom: 10px;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      ul {
+        margin-bottom: 0;
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      #nav li {
+        display: inline-block;
+        padding-right: 15px;
+      }
+
+      .listing {
+        max-width: 250px;
+        display: inline-block;
+        margin: 20px;
+      }
+
+      img {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Buy Used Cars</h1>
+      <ul id="nav">
+        <li id="make">
+          Make
+          <select name="make">
+            <option>Any</option>
+          </select>
+        </li>
+        <li id="model">
+          Model
+          <select name="model">
+            <option>Any</option>
+          </select>
+        </li>
+        <li id="price">
+          Price
+          <select name="price">
+            <option>Any</option>
+          </select>
+        </li>
+        <li id="year">
+          Year
+          <select name="year">
+            <option>Any</option>
+          </select>
+        </li>
+        <button id="filter">Filter</button>
+      </ul>
+    </header>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script id="listing" type="text/x-handlebars">
+      <div class="listing">
+      <img src="{{image}}" alt="{{year}} {{make}} {{model}}" />
+      <ul>
+        <li class="makeModel">{{make}} {{model}}</li>
+        <li class="year">Year: {{year}}</li>
+        <li class="price">Price: ${{price}}</li>
+      </ul>
+      <button>Buy</button>
+      </div>
+    </script>
+    <script>
+      const cars = [
+        { make: 'Honda', image: 'images/honda-accord-2005.jpg', model: 'Accord', year: 2005, price: 7000 },
+        { make: 'Honda', image: 'images/honda-accord-2008.jpg', model: 'Accord', year: 2008, price: 11000 },
+        { make: 'Toyota', image: 'images/toyota-camry-2009.jpg', model: 'Camry', year: 2009, price: 12500 },
+        { make: 'Toyota', image: 'images/toyota-corrolla-2016.jpg', model: 'Corolla', year: 2016, price: 15000 },
+        { make: 'Suzuki', image: 'images/suzuki-swift-2014.jpg', model: 'Swift', year: 2014, price: 9000 },
+        { make: 'Audi', image: 'images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 25000 },
+        { make: 'Audi', image: 'images/audi-a4-2013.jpg', model: 'A4', year: 2013, price: 26000 },
+      ];
+
+      function nodeFromHTML(html) {
+        let template = document.createElement('template');
+        template.innerHTML = html.trim();
+        return template.content;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let make  = document.getElementById('make');
+        let model = document.getElementById('model');
+        let year  = document.getElementById('year');
+        let price = document.getElementById('price');
+
+        let selectors = [make, model, year, price];
+
+        let listingTemplate = Handlebars.compile(document.getElementById('listing').innerHTML);
+
+        function updateNav(collection) {
+          selectors.forEach(selector => {
+            Array.from(selector.querySelector('select').children).slice(1).forEach(option => {
+              option.style.display = 'none';
+            });
+          });
+
+          Object.keys(collection[0]).forEach(key => {
+            if (key === 'image') return;
+
+            let unique = Array.from(new Set(collection.map(car => String(car[key]))));
+
+            Array.from(document.getElementById(key).querySelector('select')).forEach(option => {
+              if (unique.includes(option.textContent)) option.style.display = 'block';
+            });
+          });
+        }
+
+        Object.keys(cars[0]).forEach(key => {
+          if (key === 'image') return;
+
+          let unique = Array.from(new Set(cars.map(car => car[key])));
+
+          unique.forEach(value => {
+            let option = document.createElement('option');
+            option.textContent = value;
+
+            document.getElementById(key).querySelector('select').appendChild(option);
+          });
+        });
+
+        cars.forEach(car => document.body.appendChild(nodeFromHTML(listingTemplate(car))));
+
+        document.getElementById('nav').addEventListener('change', event => {
+          if (event.target.tagName !== 'SELECT') return;
+
+          let collection = cars.filter(car => {
+            let carValues = [car.make, car.model, car.year, car.price];
+
+            for (let i = 0; i < selectors.length; i += 1) {
+              let value = selectors[i].querySelector('select').value;
+
+              if (value !== String(carValues[i]) && value !== 'Any') return false;
+            }
+
+            return true;
+          });
+
+          updateNav(collection);
+        });
+
+        document.getElementById('filter').addEventListener('click', event => {
+          document.querySelectorAll('.listing').forEach(listing => {
+            let listingMake   = listing.querySelector('.makeModel').textContent.split(' ')[0];
+            let listingModel  = listing.querySelector('.makeModel').textContent.split(' ')[1];
+            let listingYear   = listing.querySelector('.year').textContent.split(' ')[1];
+            let listingPrice  = listing.querySelector('.price').textContent.split(' $')[1];
+            let listingValues = [listingMake, listingModel, listingYear, listingPrice];
+
+            listing.style.display = null;
+
+            selectors.forEach((selector, index) => {
+              let value = selector.querySelector('select').value;
+
+              if (value !== listingValues[index] && value !== 'Any') {
+                listing.style.display = 'none';
+              }
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

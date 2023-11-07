@@ -1,0 +1,164 @@
+<html>
+  <head>
+    <title>Form Validation</title>
+    <style>
+      .error {
+        color: red;
+      }
+
+      label {
+        display: block;
+        max-width: 200px;
+      }
+
+      label input {
+        display: block;
+        margin-bottom: 15px;
+        margin-top: 5px;
+        width: 100%;
+      }
+
+      div input {
+        width: 20%;
+        display: inline-block;
+      }
+
+      div p {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <form novalidate action='/form'>
+      <label>
+        First Name:
+        <input type="text" name="firstName" pattern="[a-zA-Z'\s]+"
+               data-validChars="[a-zA-Z'\s]" required />
+      </label>
+      <label>
+        Last Name:
+        <input type="text" name="lastName" pattern="[a-zA-Z'\s]+"
+               data-validChars="[a-zA-Z'\s]" required />
+      </label>
+      <label>
+        Email:
+        <input type="email" name="email" pattern=".+@.+" required />
+      </label>
+      <label>
+        Password:
+        <input type="password" name="password" minlength="10" required />
+      </label>
+      <label>
+        Phone:
+        <input type="tel" name="phoneNumber"
+               pattern="(\d{3}|\(\d{3}\))(-| )*\d{3}(-| )*\d{4}"
+               data-validChars="[\d\(\)\- ]"/>
+      </label>
+      <label>
+        Credit Card:
+        <div>
+          <input type="text" name="creditCard" maxlength="4"
+                 pattern="\d{4}" data-validChars="\d"/>
+          -
+          <input type="text" name="creditCard" maxlength="4"
+                 pattern="\d{4}" data-validChars="\d"/>
+          -
+          <input type="text" name="creditCard" maxlength="4"
+                 pattern="\d{4}" data-validChars="\d"/>
+          -
+          <input type="text" name="creditCard" maxlength="4"
+                 pattern="\d{4}" data-validChars="\d"/>
+        </div>
+      </label>
+      <input type="submit" value="Sign Up" />
+    </form>
+
+    <div>
+      <h1>Serialized Form</h1>
+      <p></p>
+    </div>
+
+    <script>
+      let form = document.querySelector('form');
+
+      function setErrorMessage(elem) {
+        let displayName = elem.name.split(/.{0}(?=[A-Z])/)
+                                   .map(word => word[0].toLowerCase() + word.slice(1))
+                                   .join(' ');
+
+        if (elem.validity.valueMissing) {
+          elem.setCustomValidity(displayName[0].toUpperCase() + displayName.slice(1) +
+                                 ' is a required field.');
+        } else if (elem.validity.patternMismatch) {
+          elem.setCustomValidity('Please enter a valid ' + displayName + '.');
+        } else if (elem.validity.tooShort) {
+          elem.setCustomValidity(displayName[0].toUpperCase() + displayName.slice(1) +
+                                 ' must be at least ' + elem.minLength + ' characters long.');
+        }
+      }
+
+      form.addEventListener('focusin', event => {
+        event.target.setCustomValidity('');
+
+        let error = event.target.parentElement.querySelector('.error');
+        if (error) error.parentElement.removeChild(error);
+      });
+
+      form.addEventListener('focusout', event => {
+        let invalidElem = event.target.parentElement.querySelector(':invalid');
+        if (!invalidElem) return;
+
+        setErrorMessage(invalidElem);
+
+        let message = document.createElement('p');
+        message.classList.add('error');
+        message.textContent = invalidElem.validationMessage;
+        invalidElem.parentElement.appendChild(message);
+      })
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+
+        if (event.target.checkValidity()) {
+          let data = new FormData(event.target);
+          data.set('creditCard', data.getAll('creditCard').join(''));
+          data.set('phoneNumber', data.get('phoneNumber').replace(/\D/g, ''));
+
+          fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams(data).toString(),
+          });
+
+          document.querySelector('div p').textContent = new URLSearchParams(data).toString();
+        } else {
+          if (event.target.firstElementChild.classList.contains('error')) return;
+
+          let formError = document.createElement('p');
+          formError.classList.add('error');
+          formError.textContent = 'Form cannot be submitted until errors are corrected.'
+          event.target.insertBefore(formError, event.target.firstElementChild);
+        }
+      });
+
+      form.addEventListener('keydown', event => {
+        if (event.key.length === 1 &&
+            !new RegExp(event.target.dataset.validchars).test(event.key)) {
+          event.preventDefault();
+        }
+      });
+
+      form.addEventListener('keyup', event => {
+        if (event.shiftKey || event.key === 'Shift') return;
+
+        let next = event.target.nextElementSibling || { tagName: null };
+        if (next.tagName === 'INPUT' &&
+            event.target.value.length === event.target.maxLength) {
+          event.target.nextElementSibling.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

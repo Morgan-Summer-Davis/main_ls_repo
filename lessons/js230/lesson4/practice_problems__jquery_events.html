@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Practice Problems: jQuery Events</title>
+  </head>
+  <body>
+    <form>
+      <input type="text" maxlength="1" />
+      <input type="submit" />
+    </form>
+    <a href="#">Toggle</a>
+    <div id="accordian">
+      <p>Some text</p>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $('form').on('submit', event => {
+        event.preventDefault();
+        let key = $('form').find('input[type="text"]').val();
+
+        $(document).off('keydown').on('keydown', event => {
+          if (event.key !== key) return;
+
+          $('a').trigger('click');
+        });
+      });
+
+      $('a').on('click', event => {
+        event.preventDefault();
+
+        $('#accordian').slideToggle();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+[
+  {
+    "full_name": "Naveed Fida",
+    "phone_number": "nf@example.com",
+    "email": "12345678901",
+    "tags": "friend",
+    "id": 1
+  },
+  {
+    "full_name": "Victor Reyes",
+    "phone_number": "09876543210",
+    "email": "vpr@example.com",
+    "tags": "work,friend",
+    "id": 2
+  },
+  {
+    "full_name": "Pete Hanson",
+    "phone_number": "54321098761",
+    "email": "ph@example.com",
+    "tags": null,
+    "id": 3
+  },
+  {
+    "full_name": {},
+    "phone_number": {},
+    "email": {},
+    "tags": "test",
+    "id": 4
+  },
+  {
+    "full_name": "1",
+    "phone_number": "3",
+    "email": "2",
+    "tags": "test",
+    "id": 5
+  }
+]

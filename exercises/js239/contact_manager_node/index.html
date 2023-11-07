@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Contact Manager</title>
+    <link rel="stylesheet" type="text/css" href="./public/stylesheets/whitespace_reset.css" />
+    <link rel="stylesheet" type="text/css" href="./public/stylesheets/contact_manager.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Contact Manager</h1>
+    </header>
+    <div id="menu" class="toggleable">
+      <button id="add_contact">Add Contact</button>
+      <input id="search" type="text" placeholder="Search" />
+    </div>
+    <div id="contacts" class="toggleable"></div>
+    <div id="search_notice">There are no contacts matching the query <span></span>.</div>
+    
+    <div id="form_div" class="toggleable">
+      <h1>Create Contact</h1>
+      <form action="contacts">
+        <label>Full name:</label>
+        <input type="text" name="full_name" id="form_name" />
+        <label>Email address:</label>
+        <input type="text" name="email" id="form_email" />
+        <label>Telephone number:</label>
+        <input type="text" name="phone_number" id="form_phone" />
+        <label>Tags:</label>
+        <input type="text" name="tags" id="form_tags" />
+        <span id="form_buttons">
+          <button type="submit">Submit</button>
+          <button id="cancel">Cancel</button>
+        </span>
+      </form>
+    </div>
+    
+    <script src="./public/javascripts/handlebars.js"></script>
+    <script id="contact" type="text/x-handlebars">
+      <div id={{id}} class="contact">
+        <h1 class="full_name">{{full_name}}</h2>
+        <dl>
+          <dt>Phone Number:</dt>
+          <dd class="phone_number">{{phone_number}}</dd>
+          <dt>Email:</dt>
+          <dd class="email">{{email}}</dd>
+          {{#if tags.[0]}}
+            <dt>Tags:</dt>
+            {{#each tags}}
+              <dd><a href="#" class="tag">{{this}}</a></dd>
+            {{/each}}
+          {{/if}}
+          <dl>
+          <button class="edit">Edit</button>
+          <button class="delete">Delete</button>
+          </dl>
+        </dl>
+      </div>
+    </script>
+    
+    <script src="./public/javascripts/contact_manager.js"></script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <title>Programming Languages Info</title>
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script id="article" type="text/x-handlebars">
+      <article>
+        <h1>{{name}}</h1>
+        <p>{{description}}</p>
+        {{#if link}}
+        <a href="#">Show More</a>
+        {{/if}}
+      <article>
+    </script>
+    <script>
+      const languages = [
+        {
+          name: 'Ruby',
+          description: 'Ruby is a dynamic, reflective, object-oriented, ' +
+          'general-purpose programming language. It was designed and developed in the mid-1990s ' +
+          'by Yukihiro Matsumoto in Japan. According to its creator, Ruby was influenced by Perl, ' +
+          'Smalltalk, Eiffel, Ada, and Lisp. It supports multiple programming paradigms, ' +
+          'including functional, object-oriented, and imperative. It also has a dynamic type ' +
+          'system and automatic memory management.'
+        },
+
+        {
+          name: 'JavaScript',
+          description: 'JavaScript is a high-level, dynamic, untyped, and interpreted ' +
+          'programming language. It has been standardized in the ECMAScript language ' +
+          'specification. Alongside HTML and CSS, JavaScript is one of the three core ' +
+          'technologies of World Wide Web content production; the majority of websites employ ' +
+          'it, and all modern Web browsers support it without the need for plug-ins. JavaScript ' +
+          'is prototype-based with first-class functions, making it a multi-paradigm language, ' +
+          'supporting object-oriented, imperative, and functional programming styles.'
+        },
+
+        {
+          name: 'Lisp',
+          description: 'Lisp (historically, LISP) is a family of computer programming languages ' +
+          'with a long history and a distinctive, fully parenthesized prefix notation. ' +
+          'Originally specified in 1958, Lisp is the second-oldest high-level programming ' +
+          'language in widespread use today. Only Fortran is older, by one year. Lisp has changed ' +
+          'since its early days, and many dialects have existed over its history. Today, the best '+
+          'known general-purpose Lisp dialects are Common Lisp and Scheme.'
+        },
+
+        {
+          name: 'test',
+          description: 'testing',
+        }
+      ];
+
+      function nodeFromHTML(HTML) {
+        let template = document.createElement('template');
+        template.innerHTML = HTML.trim();
+        return template.content;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let articleTemplate = Handlebars.compile(document.getElementById('article').innerHTML);
+
+        languages.forEach(language => {
+          let link  = language.description.length > 120;
+          let short = language.description.slice(0, 120) + (link ? ' ...' : '');
+          document.body.appendChild(nodeFromHTML(articleTemplate({
+            name:        language.name,
+            description: short,
+            link:        link,
+          })));
+        });
+
+        document.body.addEventListener('click', event => {
+          if (event.target.tagName !== 'A') return;
+
+          let link        = event.target;
+          let description = event.target.parentElement.querySelector('p');
+          let header      = event.target.parentElement.querySelector('h1');
+
+          event.preventDefault();
+          if (link.textContent === 'Show More') {
+            link.textContent = 'Show Less';
+            description.textContent = languages.find(language => {
+              return language.name === header.textContent;
+            }).description;
+          } else {
+            link.textContent = 'Show More';
+            description.textContent = description.textContent.slice(0, 120) + ' ...';
+          }
+        });
+
+        // document.querySelectorAll('article a').forEach(a => {
+        //   a.click();
+        //   a.click();
+        // });
+      });
+    </script>
+  </body>
+</html>

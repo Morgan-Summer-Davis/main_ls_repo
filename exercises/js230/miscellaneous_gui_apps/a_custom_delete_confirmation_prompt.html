@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>A Custom Delete Confirmation Prompt</title>
+    <style>
+      div {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+      }
+
+      .hidden {
+        transition: 1s;
+        opacity: 0;
+      }
+
+      .display {
+        transition: 1s;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <ul></ul>
+    <div>
+      <p>Are you sure you want to delete this todo?</p>
+      <button id='yes'>Yes</button>
+      <button id='no'>No</button>
+    </div>
+    <script>
+      let todoItems = [
+        { id: 1, title: 'Homework' },
+        { id: 2, title: 'Shopping' },
+        { id: 3, title: 'Calling Mom' },
+        { id: 4, title: 'Coffee with John'}
+      ];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let modal = document.querySelector('div');
+        let list  = document.querySelector('ul');
+
+        todoItems.forEach((item, index) => {
+          let todo                 = document.createElement('li');
+          todo.dataset.id          = index;
+          todo.textContent         = item.title;
+
+          let deleteButton         = document.createElement('a');
+          deleteButton.dataset.id  = index;
+          deleteButton.textContent = 'Delete';
+          deleteButton.href        = '#';
+
+          list.appendChild(todo);
+          todo.appendChild(deleteButton);
+        });
+
+        document.addEventListener('click', event => {
+          if (event.target.tagName !== 'A') return;
+
+          event.preventDefault();
+          let link = event.target;
+
+          modal.classList.remove('hidden');
+          modal.classList.add('display');
+
+          modal.addEventListener('click', event => {
+            if (event.target.tagName !== 'BUTTON') return;
+
+            modal.classList.remove('display');
+            modal.classList.add('hidden');
+
+            if (event.target.id === 'yes') {
+              list.removeChild(list.querySelector(`li[data-id="${link.dataset.id}"]`));
+            }
+          }, { once: true });
+        });
+      });
+    </script>
+  </body>
+</html>

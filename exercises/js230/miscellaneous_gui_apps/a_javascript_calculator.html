@@ -1,0 +1,172 @@
+<html>
+  <head>
+    <title>A JavaScript Calculator</title>
+    <style>
+      button {
+        width: 100%;
+      }
+      
+      td {
+        min-width: 50px;
+      }
+      
+      #operation, #entry {
+        min-height: 18px;
+      }
+      
+      #operation {
+        color: #A9A9A9;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="operation"></div>
+    <div id="entry">0</div>
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <button id="ce" class="other">CE</button>
+          </td>
+          <td>
+            <button id="c" class="other">C</button>
+          </td>
+          <td>
+            <button id="neg" class="other">NEG</button>
+          </td>
+          <td>
+            <button id="/" class="operator">/</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button id="7" class="entry">7</button>
+          </td>
+          <td>
+            <button id="8" class="entry">8</button>
+          </td>
+          <td>
+            <button id="9" class="entry">9</button>
+          </td>
+          <td>
+            <button id="x" class="operator">x</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button id="4" class="entry">4</button>
+          </td>
+          <td>
+            <button id="5" class="entry">5</button>
+          </td>
+          <td>
+            <button id="6" class="entry">6</button>
+          </td>
+          <td>
+            <button id="-" class="operator">-</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button id="1" class="entry">1</button>
+          </td>
+          <td>
+            <button id="2" class="entry">2</button>
+          </td>
+          <td>
+            <button id="3" class="entry">3</button>
+          </td>
+          <td>
+            <button id="+" class="operator">+</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button id="0" class="entry">0</button>
+          </td>
+          <td>
+            <button id="." class="entry">.</button>
+          </td>
+          <td>
+            <button id="%" class="operator">%</button>
+          </td>
+          <td>
+            <button id="=" class="other">=</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <script>
+      function evaluate(string) {
+        let array = string.split(' ');
+        while (array.length > 1) {
+          let num1 = parseInt(array[0], 10);
+          let num2 = parseInt(array[2], 10);
+          
+          switch (array[1]) {
+            case '+':
+              array[2] = num1 + num2;
+              break;
+            case '-':
+              array[2] = num1 - num2;
+              break;
+            case '/':
+              array[2] = num1 / num2;
+              break;
+            case 'x':
+              array[2] = num1 * num2;
+              break;
+            case '%':
+              array[2] = num1 % num2;
+              break;
+          }
+          
+          array = array.slice(2);
+        }
+        
+        return array[0];
+      }
+    
+      document.addEventListener('DOMContentLoaded', () => {
+        let operation = document.getElementById('operation');
+        let entry     = document.getElementById('entry');
+        
+        document.querySelector('table').addEventListener('click', event => {
+          if (event.target.tagName !== 'BUTTON') return;
+          
+          if (event.target.classList.contains('entry')) {
+            if (entry.textContent === '0' && event.target.id !== '.') entry.textContent = '';
+            entry.textContent += event.target.textContent;
+          } else if (event.target.classList.contains('operator')) {
+            operation.textContent += (entry.textContent + ' ' + event.target.textContent + ' ');
+            entry.textContent = '0';
+          } else {
+            switch (event.target.id) {
+              case 'c':
+                entry.textContent = '0';
+                break;
+              case 'ce':
+                entry.textContent = '0';
+                operation.textContent = '';
+                break;
+              case 'neg':
+                if (entry.textContent === '0') break;
+                
+                if (entry.textContent[0] === '-') {
+                  entry.textContent = entry.textContent.slice(1);
+                } else {
+                  entry.textContent = '-' + entry.textContent;
+                }
+                break;
+              case '=':
+                entry.textContent = evaluate(operation.textContent + entry.textContent);
+                operation.textContent = '';
+                break;
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

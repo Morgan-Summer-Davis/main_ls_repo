@@ -1,0 +1,105 @@
+<html>
+  <head>
+    <title>A JavaScript Stopwatch</title>
+    <style>
+      div {
+        display: inline-block;
+      }
+      
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hours">
+      00
+    </div>
+    <div>
+      :
+    </div>
+    <div id="minutes">
+      00
+    </div>
+    <div>
+      :
+    </div>
+    <div id="seconds">
+      00
+    </div>
+    <div>
+      :
+    </div>
+    <div id="centiseconds">
+      00
+    </div>
+    <button id="start">Start</button>
+    <button id="stop" class="hidden">Stop</button>
+    <button id="reset">Reset</button>
+    <script>
+      function increment(element) {
+        element.textContent = parseInt(element.textContent, 10) + 1;
+
+        if ((element.id === 'centiseconds' && element.textContent === '100') ||
+            (element.id !== 'centiseconds' && element.textContent === '60')) {
+          element.textContent = '0';
+        }
+
+        if (String(element.textContent).length < 2) {
+          element.textContent = '0' + element.textContent;
+        }
+      }
+      
+      const HOUR_IN_MILLISECONDS        = 3600000;
+      const MINUTE_IN_MILLISECONDS      = 60000;
+      const SECOND_IN_MILLISECONDS      = 1000;
+      const CENTISECOND_IN_MILLISECONDS = 10;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let hours        = document.getElementById('hours');
+        let minutes      = document.getElementById('minutes');
+        let seconds      = document.getElementById('seconds')
+        let centiseconds = document.getElementById('centiseconds');
+        let start        = document.getElementById('start');
+        let stop         = document.getElementById('stop');
+        let reset        = document.getElementById('reset');
+        
+        let centisecondInterval;
+        
+        let running = false;
+        let centisecondsElapsed = 0;
+        
+        document.getElementById('start').addEventListener('click', event => {
+          if (running) return;
+          
+          centisecondInterval = setInterval(() => {
+            centisecondsElapsed += 10;
+            if (centisecondsElapsed % CENTISECOND_IN_MILLISECONDS === 0) increment(centiseconds);
+            if (centisecondsElapsed % SECOND_IN_MILLISECONDS === 0) increment(seconds);
+            if (centisecondsElapsed % MINUTE_IN_MILLISECONDS === 0) increment(minutes);
+            if (centisecondsElapsed % HOUR_IN_MILLISECONDS === 0) increment(hours);
+          }, 10);
+          
+          running = true;
+          start.classList.add('hidden');
+          stop.classList.remove('hidden');
+        });
+        
+        document.getElementById('stop').addEventListener('click', event => {
+          if (!running) return;
+          
+          clearInterval(centisecondInterval);
+          running = false;
+          start.classList.remove('hidden');
+          stop.classList.add('hidden');
+        });
+        
+        document.getElementById('reset').addEventListener('click', event => {
+          if (running) stop.click();
+          [hours, minutes, seconds, centiseconds].forEach(element => element.textContent = '00');
+          centisecondsElapsed = 0;
+        });
+      });
+    </script>
+  </body>
+</html>

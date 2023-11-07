@@ -1,0 +1,145 @@
+body {
+  box-sizing: border-box;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+header {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #6f5499;
+}
+
+#menu {
+  background-color: #E5E4E2;
+  display: flex;
+  justify-content: center;
+}
+
+#menu * {
+  margin: 0 2rem;
+}
+
+input[type="text"] {
+  padding: 0.4rem;
+  min-width: 15rem;
+}
+
+.contact {
+  font-size: 0.85rem;
+  display: inline-block;
+  padding: 1.9rem 5rem 0.6rem 1.2rem;
+  margin: 0 1rem;
+  border-bottom: 1px solid #E5E4E2;
+}
+
+dl {
+  margin: 1.1rem 0;
+}
+
+dt {
+  font-weight: bold;
+  margin: 0.2rem 0;
+}
+
+.full_name {
+  font-size: 1.5rem;
+}
+
+button {
+  color: #6f5499;
+  background-color: #fff;
+  border: 1px solid #6f5499;
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  margin-right: 0.85rem;
+}
+
+#add_contact {
+  font-size: 1rem;
+  background-color: #E5E4E2;
+  padding: 0.5rem 0.75rem;
+  
+}
+
+button:hover, #add_contact:hover, .tag:hover {
+  background-color: #6f5499;
+  color: #fff;
+  cursor: pointer;
+}
+
+dd {
+  display: inline-block;
+}
+
+.tag {
+  color: #6f5499;
+  text-decoration: none;
+  background-color: #E5E4E2;
+  padding: 0.3rem;
+}
+
+#form_div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 2rem;
+}
+
+#form_div h1 {
+  font-size: 1.7rem;
+  width: 90%;
+  border-bottom: 1px solid #E5E4E2;
+  text-align: center;
+  padding: 1rem;
+  display: block;
+}
+
+form {
+  margin: auto;
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 1.25rem;
+}
+
+label {
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.9rem;
+  align-self: center;
+}
+
+#form_buttons {
+  grid-column: 2;
+}
+
+.toggleable {
+  box-sizing: border-box;
+  transition: height .25s ease;
+  overflow: hidden;
+}
+
+.toggleable:not(.active) {
+  display: none;
+}
+
+#form_div:not(.active) {
+  display: none;
+}
+
+#menu:not(.active) {
+  display: none;
+}
+
+#search_notice {
+  background-color: #E5E4E2;
+  font-size: 2rem;
+  display: none;
+}
+
+#search, #add_contact {
+  margin: 1rem;
+}

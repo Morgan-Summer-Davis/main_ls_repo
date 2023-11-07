@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>HTML Data Attributes</title>
+    <style>
+      article + article {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li data-articleid="1">Article 1</li>
+      <li data-articleid="2">Article 2</li>
+      <li data-articleid="3">Article 3</li>
+    </ul>
+    <article data-articleid="1">
+      <p>Lorem</p>
+    </article>
+    <article data-articleid="2">
+      <p>Ipsum</p>
+    </article>
+    <article data-articleid="3">
+      <p>Dolor</p>
+    </article>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('ul').addEventListener('click', event => {
+          let articles = Array.from(document.querySelectorAll('article'));
+          let article = articles.filter(article => {
+            return article.dataset.articleid === event.target.dataset.articleid;
+          })[0];
+
+          articles.forEach(article => article.style.display = 'none');
+          article.style.display = 'block';
+          console.log(event.target.dataset.articleid);
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <title>Practice Problems: Handlebars Basics</title>
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script id="posts" type="text/x-handlebars">
+      {{#each posts}}
+      {{> post}}
+      {{/each}}
+    </script>
+    <script id="post" type="text/x-handlebars">
+      <article>
+        <h1>{{{title}}}</h1>
+        <p><time>Posted on {{published}}</time></p>
+        {{body}}
+        {{#if tags}}
+        {{> tag}}
+        {{else}}
+        <p>Not tagged</p>
+        {{/if}}
+      </article>
+    </script>
+    <script id="tag" type="text/x-handlebars">
+      <ul>
+        {{#each tags}}
+        <li>{{this}}</li>
+        {{/each}}
+      </uL>
+    </script>
+    <script>
+      let post = {
+        title: '<em>Lorem ipsum dolor sit amet</em>',
+        published: 'April 1, 2015',
+        body: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.',
+        tags: ['lorem', 'ipsum', 'dolor'],
+      };
+
+      let post2 = JSON.parse(JSON.stringify(post));
+      delete post2.tags;
+
+      let posts = { posts: [post, post2] };
+
+      let postTemplate = Handlebars.compile($('#posts').html());
+      Handlebars.registerPartial('tag', $('#tag').html());
+      Handlebars.registerPartial('post', $('#post').html());
+
+      $('body').append(postTemplate(posts));
+    </script>
+  </body>
+</html>

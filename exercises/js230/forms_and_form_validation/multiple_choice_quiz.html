@@ -1,0 +1,131 @@
+<html>
+  <head>
+    <title>Multiple Choice Quiz</title>
+    <style>
+      fieldset {
+        border: none;
+      }
+
+      label {
+        display: block;
+        margin-top: 5px;
+      }
+
+      input[type="submit"] {
+        margin-top: 20px;
+      }
+
+      .correct {
+        border: 1px solid green;
+        padding: 6px;
+        width: 100%;
+      }
+
+      .wrong {
+        border: 1px solid red;
+        padding: 6px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Multiple Choice Quiz</h1>
+    <form>
+      <input type="submit" value="Submit Quiz" />
+      <input type="reset" value="Reset" />
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script id="question" type="text/x-handlebars">
+      <fieldset>
+        <p>Q{{id}}. {{{description}}}</p>
+        {{#each options}}
+        <label>
+          <input name="{{../id}}" type="radio" value="{{this}}" />
+          {{this}}
+        </label>
+        {{/each}}
+        <p id="message{{id}}"></p>
+      </fieldset>
+    </script>
+
+    <script>
+      const questions = [
+        {
+          id: 1,
+          description: "Who is the author of <cite>The Hitchhiker's Guide to the Galaxy</cite>?",
+          options: ['Dan Simmons', 'Douglas Adams', 'Stephen Fry', 'Robert A. Heinlein'],
+        },
+        {
+          id: 2,
+          description: 'Which of the following numbers is the answer to Life, the \
+                        Universe and Everything?',
+          options: ['66', '13', '111', '42'],
+        },
+        {
+          id: 3,
+          description: 'What is Pan Galactic Gargle Blaster?',
+          options: ['A drink', 'A machine', 'A creature', 'None of the above'],
+        },
+        {
+          id: 4,
+          description: 'Which star system does Ford Prefect belong to?',
+          options: ['Aldebaran', 'Algol', 'Betelgeuse', 'Alpha Centauri'],
+        },
+      ];
+
+      const answerKey = { '1': 'Douglas Adams', '2': '42', '3': 'A drink', '4': 'Betelgeuse' };
+
+      function nodeFromHTML(HTML) {
+        let template = document.createElement('template');
+        template.innerHTML = HTML.trim();
+        return template.content;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        let form             = document.querySelector('form');
+        let submit           = document.querySelector('[type="submit"]');
+        let questionTemplate = Handlebars.compile(document.getElementById('question').innerHTML);
+
+        questions.forEach(question => {
+          form.insertBefore(nodeFromHTML(questionTemplate(question)),
+                            form.querySelector('[type="submit"]'));
+        });
+
+        form.addEventListener('submit', event => {
+          event.preventDefault();
+          submit.setAttribute('disabled', true);
+
+          let answers = Object.fromEntries(new FormData(event.currentTarget).entries());
+          Object.keys(answerKey).forEach(key => {
+            let messageElem = document.getElementById('message' + key);
+            if (answers[key] === answerKey[key]) {
+              messageElem.textContent = 'Correct Answer';
+              messageElem.classList.add('correct');
+            } else if (answers[key]) {
+              messageElem.textContent = 'Wrong answer. The correct answer is "' +
+                                        answerKey[key] + '".';
+              messageElem.classList.add('wrong');
+            } else {
+              messageElem.textContent = 'You did not answer this question. ' +
+                                        'The correct answer is "' + answerKey[key] + '".';
+              messageElem.classList.add('wrong');
+            }
+          });
+
+        });
+
+        form.addEventListener('reset', event => {
+          event.preventDefault();
+          submit.removeAttribute('disabled');
+          event.currentTarget.querySelectorAll('fieldset label + p').forEach(node => {
+            node.className = '';
+            node.textContent = '';
+          });
+          event.currentTarget.querySelectorAll('[type="radio"]')
+               .forEach(node => node.checked = false);
+        });
+      });
+    </script>
+  </body>
+</html>
