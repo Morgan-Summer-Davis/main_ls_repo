@@ -1,6 +1,6 @@
 'use strict';
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import calculateBMI from './bmiCalculator';
 import calculateExercises from './exerciseCalculator';
 
@@ -17,7 +17,7 @@ const PORT = 8080;
 
 app.use(express.json());
 
-app.get('/hello', (_req, res) => {
+app.get('/hello', (_req: Request, res: Response) => {
   res.send('Hello Full Stack!');
 });
 
